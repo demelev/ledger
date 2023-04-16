@@ -1413,6 +1413,11 @@ value_t value_t::value(const datetime_t&   moment,
                        const commodity_t * in_terms_of) const
 {
   switch (type()) {
+  case VOID: {
+    amount_t amt = amount_t(0L).with_commodity(*in_terms_of);
+    return amt;
+  }
+
   case INTEGER:
     return NULL_VALUE;
 
@@ -1446,6 +1451,9 @@ value_t value_t::exchange_commodities(const std::string& commodities,
                                       const bool         add_prices,
                                       const datetime_t&  moment)
 {
+  if (type() == VOID) {
+    return amount_t(0L);
+  }
   if (type() == SEQUENCE) {
     value_t temp;
     foreach (value_t& value, as_sequence_lval())
@@ -1582,6 +1590,9 @@ void value_t::in_place_unreduce()
 value_t value_t::abs() const
 {
   switch (type()) {
+  case VOID: {
+    return amount_t(0L);
+  }
   case INTEGER: {
     long val = as_long();
     if (val < 0)

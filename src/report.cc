@@ -598,7 +598,7 @@ value_t report_t::fn_market(call_scope_t& args)
   else
     result = arg0.value(moment);
 
-  return ! result.is_null() ? result : arg0;
+  return ! result.is_null() ? result : (arg0.is_null() ? amount_t(0L) : arg0);
 }
 
 value_t report_t::fn_get_at(call_scope_t& args)
@@ -880,6 +880,9 @@ value_t report_t::fn_nail_down(call_scope_t& args)
   value_t arg1(args[1]);
 
   switch (arg0.type()) {
+  case value_t::VOID: {
+    return amount_t(0L);
+  }
   case value_t::AMOUNT: {
     amount_t tmp(arg0.as_amount());
     if (tmp.has_commodity() && ! tmp.is_null() && ! tmp.is_realzero()) {
@@ -911,10 +914,15 @@ value_t report_t::fn_nail_down(call_scope_t& args)
 
   case value_t::SEQUENCE: {
     value_t tmp;
+    int idx = 0;
+
     foreach (value_t& value, arg0.as_sequence_lval()) {
       call_scope_t inner_args(*args.parent);
       inner_args.push_back(value);
-      inner_args.push_back(arg1);
+
+      if (arg1.is_sequence()) inner_args.push_back(arg1.as_sequence_lval()[idx++]);
+      else inner_args.push_back(arg1);
+
       tmp.push_back(fn_nail_down(inner_args));
     }
     return tmp;

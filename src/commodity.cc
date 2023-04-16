@@ -222,8 +222,12 @@ commodity_t& commodity_t::nail_down(const expr_t& expr)
 {
   annotation_t new_details;
 
+
   new_details.value_expr = expr;
   new_details.add_flags(ANNOTATION_VALUE_EXPR_CALCULATED);
+
+  DEBUG("commodity.nail_down",
+        "Nail down " << *this << " with new details " << new_details);
 
   return *pool().find_or_create(symbol(), new_details);
 }

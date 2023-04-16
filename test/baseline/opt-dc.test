@@ -1,3 +1,6 @@
+P 2012-03-10 $ 5 MDL
+P 2012-03-11 $ 10 MDL
+
 2012-03-10 Employer
     Assets:Cash                 $100
     Income:Employer
@@ -35,4 +38,18 @@ test bal --dc
           $145           $145              0
 end test
 
+test bal --dc -X MDL
+       MDL1050         MDL350         MDL700  Assets:Cash
+        MDL400         MDL100         MDL300  Expenses:Food
+             0        MDL1000       MDL-1000  Income:Employer
+--------------------------------------------
+       MDL1450        MDL1450              0
+end test
 
+test bal --dc -X MDL -H
+        MDL525         MDL175         MDL350  Assets:Cash
+        MDL200          MDL50         MDL150  Expenses:Food
+             0         MDL500        MDL-500  Income:Employer
+--------------------------------------------
+        MDL725         MDL725              0
+end test
